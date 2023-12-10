@@ -35,7 +35,6 @@ class TestBooksCollector:
         collector.set_book_genre("Книга", "Фантастика")
         assert collector.books_genre["Книга"] == "Фантастика"
 
-
     def test_get_book_genre_get_genre_of_one_book(self):
         collector = BooksCollector()
         collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
@@ -48,7 +47,6 @@ class TestBooksCollector:
         collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
                                  "Book5": "Комедии"}
         assert collector.get_books_with_specific_genre("Ужасы") == ["Book2", "Book3"]
-
 
     def test_get_books_genre_positive_result(self):
         collector = BooksCollector()
