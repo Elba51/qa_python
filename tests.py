@@ -1,5 +1,6 @@
-from main import BooksCollector
 
+import pytest
+from main import BooksCollector
 class TestBooksCollector:
 
     # пример теста:
@@ -21,68 +22,59 @@ class TestBooksCollector:
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
-    def test_add_new_book_add_same_book(self):
+    @pytest.mark.parametrize('name', ['This is a book with more than 41 symbol that more the maximum length allowed',
+                                      'This string has 41 characters in it......'])
+    def test_add_new_book_add_book_longer_name_than_allowed(self, name):
         collector = BooksCollector()
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        assert len(collector.get_books_genre()) == 1
+        collector.add_new_book(name)
+        assert name not in collector.books_genre
 
-    def test_add_new_book_add_book_longer_41_letters(self):
+    def test_set_book_genre_positive_result(self):
         collector = BooksCollector()
-        collector.add_new_book('Алиса в Стране Чудес, Или Странствие в Странную Страну по страницам престранной пространной истории')
-        assert len(collector.get_books_genre()) == 0
+        collector.add_new_book("Книга")
+        collector.set_book_genre("Книга", "Фантастика")
+        assert collector.books_genre["Книга"] == "Фантастика"
 
-    def test_get_book_genre_for_book_without_genre(self):
+
+    def test_get_book_genre_get_genre_of_one_book(self):
         collector = BooksCollector()
-        collector.get_book_genre('Что делать, если ваш кот хочет вас убить')
-        assert collector.get_book_genre('Что делать, если ваш кот хочет вас убить') is None
+        collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
+                                 "Book5": "Комедии"}
+        genre1 = collector.get_book_genre('Book1')
+        assert genre1 == 'Фантастика'
 
-    def test_get_books_with_specific_no_horror_books(self):
+    def test_get_books_with_specific_genre_get_horror_books(self):
         collector = BooksCollector()
-        books_with_specific_genre = collector.get_books_with_specific_genre('Ужасы')
-        assert len(books_with_specific_genre) == 0
+        collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
+                                 "Book5": "Комедии"}
+        assert collector.get_books_with_specific_genre("Ужасы") == ["Book2", "Book3"]
 
-    def test_get_books_genre_get_genre_for_all_books(self):
+
+    def test_get_books_genre_positive_result(self):
         collector = BooksCollector()
-        collector.add_new_book('Harry Potter')
-        collector.set_book_genre('Harry Potter', 'Фантастика')
-        collector.add_new_book('It')
-        collector.set_book_genre('It', 'Ужасы')
-        collector.add_new_book('Winnie the Pooh')
-        collector.set_book_genre('Winnie the Pooh', 'Мультфильмы')
-        book_genre = collector.get_books_genre()
-        assert book_genre['Harry Potter'] == 'Фантастика'
-        assert book_genre['It'] == 'Ужасы'
-        assert book_genre['Winnie the Pooh'] == 'Мультфильмы'
+        collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
+                                 "Book5": "Комедии"}
+        assert len(collector.get_books_genre()) == 5
 
-
-    def test_get_books_for_children_get_0_books(self):
+    def test_get_books_for_children_positive_result(self):
         collector = BooksCollector()
-        books_for_children = collector.get_books_for_children()
-        assert len(books_for_children) == 0
+        collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
+                                 "Book5": "Комедии"}
+        assert len(collector.get_books_for_children()) == 3
 
-    def test_add_book_in_favorites(self):
+    def test_add_book_in_favorites_add_one_book(self):
         collector = BooksCollector()
-        collector.add_new_book("Harry Potter")
-        collector.add_book_in_favorites("Harry Potter")
-        assert "Harry Potter" in collector.get_list_of_favorites_books()
+        collector.add_new_book("NewBook")
+        collector.add_book_in_favorites("NewBook")
+        assert collector.favorites[0] == "NewBook"
 
-    def test_add_book_in_favorites_existing_book(self):
+    def test_delete_book_from_favorites_delete_one_book(self):
         collector = BooksCollector()
-        collector.add_new_book("Harry Potter")
-        collector.add_book_in_favorites("Harry Potter")
-        collector.add_book_in_favorites("Harry Potter")
-        assert len(collector.get_list_of_favorites_books()) == 1
+        collector.favorites = ["Book1", "Book2", "Book3", "Book4", "Book5"]
+        collector.delete_book_from_favorites("Book2")
+        assert len(collector.favorites) == 4
 
-    def test_delete_book_from_favorites_delete_book_not_from_list(self):
+    def test_get_list_of_favorites_books_positive_result(self):
         collector = BooksCollector()
-        favorite_book = collector.delete_book_from_favorites('Винни-Пух и все все все')
-        assert favorite_book == None
-
-    def test_get_list_of_favorites_books_get_all_books(self):
-        collector = BooksCollector()
-        collector.add_new_book("Harry Potter")
-        collector.add_book_in_favorites("Harry Potter")
-        collector.get_list_of_favorites_books()
-        assert len(collector.get_list_of_favorites_books()) == 1
-
+        collector.favorites = ["Book1", "Book2", "Book3", "Book4", "Book5"]
+        assert len(collector.favorites) == 5
