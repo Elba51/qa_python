@@ -27,20 +27,21 @@ class TestBooksCollector:
     def test_add_new_book_add_book_longer_name_than_allowed(self, name):
         collector = BooksCollector()
         collector.add_new_book(name)
-        assert name not in collector.books_genre
-
+        assert name not in collector.get_books_genre()
+#check
     def test_set_book_genre_positive_result(self):
         collector = BooksCollector()
         collector.add_new_book("Книга")
         collector.set_book_genre("Книга", "Фантастика")
-        assert collector.books_genre["Книга"] == "Фантастика"
+        assert collector.get_book_genre("Книга") == "Фантастика"
 
+#check
     def test_get_book_genre_get_genre_of_one_book(self):
         collector = BooksCollector()
         collector.books_genre = {"Book1": "Фантастика", "Book2": "Ужасы", "Book3": "Ужасы", "Book4": "Мультфильмы",
                                  "Book5": "Комедии"}
-        genre1 = collector.get_book_genre('Book1')
-        assert genre1 == 'Фантастика'
+        #collector.get_book_genre("Book1")
+        assert collector.get_book_genre("Book1") == "Фантастика"
 
     def test_get_books_with_specific_genre_get_horror_books(self):
         collector = BooksCollector()
@@ -64,15 +65,15 @@ class TestBooksCollector:
         collector = BooksCollector()
         collector.add_new_book("NewBook")
         collector.add_book_in_favorites("NewBook")
-        assert collector.favorites[0] == "NewBook"
+        assert collector.get_list_of_favorites_books() == ["NewBook"]
 
     def test_delete_book_from_favorites_delete_one_book(self):
         collector = BooksCollector()
         collector.favorites = ["Book1", "Book2", "Book3", "Book4", "Book5"]
         collector.delete_book_from_favorites("Book2")
-        assert len(collector.favorites) == 4
+        assert len(collector.get_list_of_favorites_books()) == 4
 
     def test_get_list_of_favorites_books_positive_result(self):
         collector = BooksCollector()
         collector.favorites = ["Book1", "Book2", "Book3", "Book4", "Book5"]
-        assert len(collector.favorites) == 5
+        assert len(collector.get_list_of_favorites_books()) == 5
